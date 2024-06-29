@@ -10,6 +10,5 @@ class Config(object):
 
 
 def LocalEnv():
-    SQLALCHEMY_DATABASE_URI = "mysql+pysql://root:password@localhost:canpay_db"
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:password@localhost/canpay_db'
     return SQLALCHEMY_DATABASE_URI
-

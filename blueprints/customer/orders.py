@@ -1,8 +1,11 @@
 from flask import jsonify, request, Blueprint
+from models.order_table import Orders
 
 order_details_blueprint = Blueprint('order_details_blueprint', __name__)
 
 
 @order_details_blueprint.route('/orders', methods=['GET'])
 def order_details():
-    return jsonify(status=200, success=True, message="success"), 200
+    orders_data = Orders.query.count()
+    print("order_count", orders_data)
+    return jsonify(status=200, success=True, data="orders_data"), 200

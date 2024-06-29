@@ -3,6 +3,8 @@ from flask_cors import CORS
 from blueprints.customer.info import customer_info_details_blueprint
 from blueprints.customer.address import customer_address_details_blueprint
 from blueprints.customer.orders import order_details_blueprint
+from db_conn import db
+from database_uri import database_uri
 
 
 
@@ -15,7 +17,9 @@ def create_app():
     app.config['CSRF_ENABLED'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri()
     app.config['CSRF_ENABLED'] = True
+    db.init_app(app)
     app.register_blueprint(customer_info_details_blueprint)
     app.register_blueprint(customer_address_details_blueprint)
     app.register_blueprint(order_details_blueprint)
