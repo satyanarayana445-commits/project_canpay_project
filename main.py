@@ -7,6 +7,7 @@ from controllers.delivery_agent.delivery_agent_order import delivery_agent_order
 from controllers.distributor.distributor_info import distributor_info_blueprint
 from controllers.distributor.customer_order import distributor_customer_order_blueprint
 from controllers.distributor.delivery_agent_info import distributor_delivery_agent_info_blueprint
+from controllers.distributor.customer_info import distributor_customer_info_blueprint
 from db_conn import db
 from database_uri import database_uri
 
@@ -31,6 +32,7 @@ def create_app():
     app.register_blueprint(distributor_info_blueprint, url_prefix='/distributor')
     app.register_blueprint(distributor_customer_order_blueprint, url_prefix='/distributor/order')
     app.register_blueprint(distributor_delivery_agent_info_blueprint, url_prefix='/distributor/delivery_agent')
+    app.register_blueprint(distributor_customer_info_blueprint, url_prefix='/distributor/customer')
     return app
 
 
