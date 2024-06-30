@@ -7,7 +7,6 @@ class DistributorInfo(db.Model):
     name = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
-    primary_address_id = db.Column(db.BigInteger, nullable=True)
     status = db.Column(db.String, nullable=True)
     latitude = db.Column(db.Float, nullable=True)
     longitude = db.Column(db.Float, nullable=True)
@@ -21,7 +20,6 @@ class DistributorInfo(db.Model):
             'id': self.id,
             'name': self.name,
             'phone_number': self.phone_number,
-            'primary_address_id': self.primary_address_id,
             'status': self.status,
             'latitude': self.latitude,
             'longitude': self.longitude,

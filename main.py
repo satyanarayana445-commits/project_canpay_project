@@ -1,8 +1,12 @@
 from flask import Flask
 from flask_cors import CORS
-from blueprints.customer.info import customer_info_details_blueprint
-from blueprints.customer.address import customer_address_details_blueprint
-from blueprints.customer.orders import order_details_blueprint
+from controllers.customer.customer_info import customer_info_blueprint
+from controllers.customer.customer_order import customer_order_blueprint
+from controllers.delivery_agent.delivery_agent_info import delivery_info_blueprint
+from controllers.delivery_agent.delivery_agent_order import delivery_agent_order_blueprint
+from controllers.distributor.distributor_info import distributor_info_blueprint
+from controllers.distributor.customer_order import distributor_customer_order_blueprint
+from controllers.distributor.delivery_agent_info import distributor_delivery_agent_info_blueprint
 from db_conn import db
 from database_uri import database_uri
 
@@ -20,9 +24,13 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = database_uri()
     app.config['CSRF_ENABLED'] = True
     db.init_app(app)
-    app.register_blueprint(customer_info_details_blueprint)
-    app.register_blueprint(customer_address_details_blueprint)
-    app.register_blueprint(order_details_blueprint)
+    app.register_blueprint(customer_info_blueprint, url_prefix='/customer')
+    app.register_blueprint(customer_order_blueprint, url_prefix='/customer/order')
+    app.register_blueprint(delivery_info_blueprint, url_prefix='/delivery_agent')
+    app.register_blueprint(delivery_agent_order_blueprint, url_prefix='/delivery_agent/order')
+    app.register_blueprint(distributor_info_blueprint, url_prefix='/distributor')
+    app.register_blueprint(distributor_customer_order_blueprint, url_prefix='/distributor/order')
+    app.register_blueprint(distributor_delivery_agent_info_blueprint, url_prefix='/distributor/delivery_agent')
     return app
 
 

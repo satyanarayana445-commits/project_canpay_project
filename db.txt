@@ -1,0 +1,151 @@
+
+// create table for below attributes
+
+CREATE TABLE `db_makhana`.`CUSTOMER_INFO` (
+  `id` serial PRIMARY KEY,
+  `name` VARCHAR(45) NULL,
+  `email` VARCHAR(100) NULL,
+  `phone_number` VARCHAR(15) NOT NULL,
+  `avatar` VARCHAR(100) NULL,
+  `primary_address` BIGINT UNSIGNED NULL,
+  `cans_purchased` INT NULL DEFAULT 0,
+  `pay_later` TINYINT NULL DEFAULT 0,
+  `latitude` DOUBLE NULL,
+  `longitude` DOUBLE NULL,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  );
+
+
+CREATE TABLE `db_makhana`.`CUSTOMER_ADDRESS` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `latitude` double NOT NULL,
+  `longitude` double NOT NULL,
+  `map_address` varchar(300) NOT NULL,
+  `flat_number` varchar(50) NOT NULL,
+  `floor_number` int NOT NULL,
+  `lift_available` tinyint NOT NULL DEFAULT 1,
+  `building` varchar(100) NOT NULL,
+  `landmark` varchar(100) NULL,
+  `pin_code` varchar(10) NOT NULL,
+  `customer_id` bigint unsigned NULL,
+  `address_type` varchar(45) NULL DEFAULT 'Others',
+  `is_active` tinyint NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_customer_id` (`customer_id`),
+  CONSTRAINT `fk_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `db_makhana`.`CUSTOMER_INFO` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `db_makhana`.`DISTRIBUTOR_INFO` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NULL,
+  `phone_number` varchar(15) NOT NULL UNIQUE,
+  `primary_address` bigint unsigned NULL,
+  `status` varchar(45) NULL,
+  `latitude` double NULL,
+  `longitude` double NULL,
+  `is_active` tinyint NULL DEFAULT 1,
+  `no_of_orders` bigint NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+// TODO: to add tags list in product_info table
+CREATE TABLE `db_makhana`.`PRODUCT_INFO` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `price` int NOT NULL,
+  `is_active` tinyint NOT NULL DEFAULT 1,
+  `description` varchar(300) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+CREATE TABLE `db_makhana`.`PRODUCT_IMAGE` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` bigint unsigned NOT NULL,
+  `image_url` varchar(300) NOT NULL,
+  `priority` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_product_id` (`product_id`),
+  CONSTRAINT `fk_product_id` FOREIGN KEY (`product_id`) REFERENCES `db_makhana`.`PRODUCT_INFO` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+CREATE TABLE `db_makhana`.`CUSTOMER_ORDER` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `customer_id` bigint unsigned NOT NULL,
+  `address_id` bigint unsigned NOT NULL,
+  `distributor_id` bigint unsigned NOT NULL,
+  `selected_date` date NOT NULL,
+  `selected_slot` int NOT NULL,
+  `status` varchar(45) NOT NULL,
+  `special_instruction` varchar(300) NULL,
+  `delivery_charges` int NOT NULL,
+  `item_total` int NOT NULL,
+  `total` int NOT NULL,
+  `is_paid` tinyint NOT NULL,
+  `pay_later` tinyint NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`customer_id`) REFERENCES `db_makhana`.`CUSTOMER_INFO` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`address_id`) REFERENCES `db_makhana`.`CLIENT_ADDRESS` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`distributor_id`) REFERENCES `db_makhana`.`DISTRIBUTOR_INFO` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+CREATE TABLE `db_makhana`.`CUSTOMER_ORDER_ITEM` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` bigint unsigned NOT NULL,
+  `product_id` bigint unsigned NOT NULL,
+  `quantity` int NOT NULL,
+  `price` int NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`order_id`) REFERENCES `db_makhana`.`CLIENT_ORDER` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`product_id`) REFERENCES `db_makhana`.`PRODUCT_INFO` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+CREATE TABLE `db_makhana`.`CUSTOMER_ORDER_PAYMENT` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` bigint unsigned NOT NULL,
+  `gateway_payment_id` varchar(100) NOT NULL,
+  `amount` bigint NOT NULL,
+  `status` varchar(45) NOT NULL,
+  `currency` varchar(10) NOT NULL,
+  `attempts` int NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`order_id`) REFERENCES `db_makhana`.`CLIENT_ORDER` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `db_makhana`.`DELIVERY_AGENT_INFO` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NULL,
+  `distributor_id` bigint unsigned NULL,
+  `phone_number` varchar(15) NOT NULL UNIQUE,
+  `secondary_phone_number` varchar(15) NULL,
+  `status` varchar(45) NULL,
+  `password` varchar(100) NOT NULL,
+  `is_active` tinyint NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+    FOREIGN KEY (`distributor_id`) REFERENCES `db_makhana`.`DISTRIBUTOR_INFO` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+

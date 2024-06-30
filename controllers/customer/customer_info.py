@@ -4,18 +4,18 @@ from db_conn.db import db_connection
 from models.customer.customer_address import CustomerAddress
 from models.customer.customer_info import CustomerInfo
 
-app = Blueprint('customer_info_blueprint', __name__)
+customer_info_blueprint = Blueprint('customer_info_blueprint', __name__)
 session =  db_connection()
 
 
 # get customer info by id
-@app.route('/info/<int:customer_id>', methods=['GET'])
+@customer_info_blueprint.route('/info/<int:customer_id>', methods=['GET'])
 def get_customer_info_by_id(customer_id):
     customer_data = CustomerInfo.query.filter_by(id=customer_id).first()
     return jsonify(status=200, success=True, data=customer_data), 200
 
 # update customer info (name and email)
-@app.route('/info', methods=['PUT'])
+@customer_info_blueprint.route('/info', methods=['PUT'])
 def update_customer_info():
     customer_details = request.get_json()
     customer_id = customer_details.get('customerId')
@@ -29,13 +29,13 @@ def update_customer_info():
     return jsonify(status=200, success=True, data="customer_data"), 200
 
 # get all active customer addresses
-@app.route('/addresses/<int:customer_id>', methods=['GET'])
+@customer_info_blueprint.route('/addresses/<int:customer_id>', methods=['GET'])
 def get_all_customer_addresses(customer_id):
     addresses_data = CustomerAddress.query.filter_by(customer_id=customer_id, is_active=True).all()
     return jsonify(status=200, success=True, data=addresses_data), 200
 
 # create customer address
-@app.route('/address', methods=['POST'])
+@customer_info_blueprint.route('/address', methods=['POST'])
 def create_customer_address():
     address_details = request.get_json()
     latitude = address_details.get('latitude')
@@ -55,7 +55,7 @@ def create_customer_address():
     return jsonify(status=200, success=True, data="addresses_data"), 200
 
 # update customer address
-@app.route('/address/<int:customer_id>', methods=['PUT'])
+@customer_info_blueprint.route('/address/<int:customer_id>', methods=['PUT'])
 def update_customer_address(customer_id):
     address_details = request.get_json()
     address_id = address_details.get('addressId')
@@ -83,7 +83,7 @@ def update_customer_address(customer_id):
     return jsonify(status=200, success=True, data="addresses_data"), 200
 
 # delete customer address
-@app.route('/address/<int:address_id>', methods=['DELETE'])
+@customer_info_blueprint.route('/address/<int:address_id>', methods=['DELETE'])
 def delete_customer_address(address_id):
     address_data = CustomerAddress.query.filter_by(id=address_id).first()
     address_data.is_active = False
