@@ -11,7 +11,7 @@ class CustomerInfo(db.Model):
     email = Column(String, nullable=True)
     phone_number = Column(String, nullable=False)
     avatar = Column(String, nullable=True)
-    primary_address_id = Column(BigInteger, nullable=True)
+    primary_address = Column(BigInteger, nullable=True)
     cans_purchased = Column(Integer, default=0)
     pay_later = Column(Boolean, default=False)
     latitude = Column(Float, nullable=True)
@@ -26,7 +26,7 @@ class CustomerInfo(db.Model):
             'email': self.email,
             'phone_number': self.phone_number,
             'avatar': self.avatar,
-            'primary_address_id': self.primary_address_id,
+            'primary_address_id': self.primary_address,
             'cans_purchased': self.cans_purchased,
             'pay_later': self.pay_later,
             'latitude': self.latitude,

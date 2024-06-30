@@ -10,6 +10,6 @@ def init_app(app):
 
 def db_connection():
     mysql_engine = create_engine(database_uri(), pool_size=1000, pool_recycle=3600, max_overflow=0)
-    Session = sessionmaker(bindd=mysql_engine)
+    Session = sessionmaker(bind=mysql_engine)
     session = Session()
     return session
